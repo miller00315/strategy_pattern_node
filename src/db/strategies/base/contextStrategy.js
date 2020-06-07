@@ -21,6 +21,14 @@ class ContextStrategy extends InterfaceCrud {
   delete(id) {
     return this._database.delete(id);
   }
+
+  isConnected() {
+    return this._database.isConnected();
+  }
+
+  connect() {
+    this._database.connect();
+  }
 }
 
 module.exports = ContextStrategy;
