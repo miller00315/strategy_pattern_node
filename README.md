@@ -1,1 +1,1 @@
-Projeto par estudos sobre Padrão estartegy e mongo db.
+Projeto par estudos sobre Padrão strategy e mongo db.
