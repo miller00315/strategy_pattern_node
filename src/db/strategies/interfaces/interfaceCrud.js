@@ -24,6 +24,10 @@ class InterfaceCrud {
   isConnected() {
     throw new NotImplementedException();
   }
+
+  connect() {
+    throw new NotImplementedException();
+  }
 }
 
 module.exports = InterfaceCrud;
