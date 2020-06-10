@@ -1,4 +1,22 @@
-# --- MONGODB
+#--- Postgres
+
+docker run \
+    --name postgres \
+    -e POSTGRES_USER=test \
+    -e POSTGRES_PASSWORD=test \
+    -e POSTGRES_DB=heroes \
+    -p 5432:5432 \
+    -d \
+    postgres
+
+docker run \
+    --name adminer \
+    -p 8080:8080 \
+    --link postgres:postgres \
+    -d \
+    adminer
+
+#--- MONGODB
 
 docker run \
     --name mongodb \
@@ -15,7 +33,9 @@ docker run \
     -d \
     mongoclient/mongoclient
 
-socker exec -it mongodb \
-    mongo -- host -u admin -p senhaadmin --authenticationDatabase admin \
+docker exec -it mongodb \
+    mongo --host localhost -u admin -p senhaadmin --authenticationDatabase admin \
     --eval "db.getSiblingDB('heroes').createUser({user:'temp', pwd:'temppassowrd', 
     roles: [{role: 'readWrite', db: 'heroes'}]})"
+
+docker ps

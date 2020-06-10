@@ -45,7 +45,7 @@ class MongoDb extends InterfaceCrud {
 
   static connect() {
     Mongoose.connect(
-      'mongodb://user:userPassword@localhost:27017/heroes',
+      'mongodb://temp:temppassowrd@localhost:27017/heroes',
       {
         useNewUrlParser: true,
       },
