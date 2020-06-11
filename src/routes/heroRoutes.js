@@ -1,10 +1,11 @@
 const BaseRoute = require('./base/baseRoute');
 const Joi = require('joi');
 const Boom = require('boom');
+const failAction =  require('./../utils/failAction');
 
-const failAction = (request, headers, erro) => {
-    throw erro;
-};
+const headers = Joi.object({
+    authorized: Joi.string().required()
+}).unknown;
 
 class HeroRoutes extends BaseRoute {
   constructor(db) {
@@ -26,7 +27,8 @@ class HeroRoutes extends BaseRoute {
                 payload: {
                     nome: Joi.string().required().min(3).max(100),
                     poder: Joi.string().required().min(2).max(100),
-                }
+                },
+                headers,
             }
         },
         handler: (request) => {
@@ -57,6 +59,7 @@ class HeroRoutes extends BaseRoute {
             notes: 'Pode excluir o heroi através do id',
             validate: {
                 failAction,
+                headers,
                 params: {
                     id: Joi.string().required(),
                 }
@@ -89,6 +92,7 @@ class HeroRoutes extends BaseRoute {
         notes: 'Pode paginar resultados e filtrar po nome',
         validate: {
             failAction,
+            headers,
             query: {
                 skip: Joi.number().integer().default(0),
                 limit: Joi.number().integer().default(10),
@@ -119,6 +123,8 @@ class HeroRoutes extends BaseRoute {
             description: 'Deve atualizar heoroes',
             notes: 'Pode atualizar qualquer campo',
             validate: {
+                failAction,
+                headers,
                 params: {
                     id: Joi.string().required(),
                 },

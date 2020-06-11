@@ -1,5 +1,5 @@
 const HapiSwagger = require('hapi-swagger');
-
+const HapiJwt = require('hapi-auth-jwt2');
 const Hapi = require('@hapi/hapi');
 const Vision = require('vision');
 const Inert = require('inert');
@@ -10,6 +10,8 @@ const postgresHeroesSchema = require('./db/strategies/postgres/schemas/heroesSch
 const Context = require('./db/strategies/base/contextStrategy');
 const MongoDB = require('./db/strategies/mongoDB/mongodb');
 const HeroRoutes = require('./routes/heroRoutes');
+const AuthRoutes = require('./routes/authRoutes');
+const JWT_KEY = 'chavinha';
 
 const app = new Hapi.Server({
   port: 3000,
@@ -33,13 +35,29 @@ async function main() {
   await app.register([
     Inert,
     Vision,
+    HapiJwt,
     {
       plugin: HapiSwagger,
       options,
     },
   ]);
 
-  app.route(mapRoutes(new HeroRoutes(context), HeroRoutes.methods()));
+  app.auth.strategy('jwt', 'jwt', {
+    keey: JWT_KEY,
+    options: {},
+    validate: (data, request) => {
+      return {
+        isValid: true,
+      };
+    },
+  });
+
+  app.auth.default('jwt');
+
+  app.route([
+    ...mapRoutes(new HeroRoutes(context), HeroRoutes.methods()),
+    ...mapRoutes(new AuthRoutes(JWT_KEY), AuthRoutes.methods()),
+  ]);
 
   return app;
 }
