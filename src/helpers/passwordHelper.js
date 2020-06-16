@@ -4,9 +4,11 @@ const { promisify } = require('util');
 const hashAsync = promisify(Bcrypt.hash);
 const compareAsync = promisify(Bcrypt.compare);
 
+const SALT_PWD = parseInt(process.env.SALT_PWD);
+
 class Password {
   static hashPassword(pass) {
-    return hashAsync(pass, process.env.SALT_PWD);
+    return hashAsync(pass, SALT_PWD);
   }
 
   static comparePassword(pass, hash) {

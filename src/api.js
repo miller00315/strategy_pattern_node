@@ -28,7 +28,7 @@ const HeroRoutes = require('./routes/heroRoutes');
 const AuthRoutes = require('./routes/authRoutes');
 const UtilsRoutes = require('./routes/utilsRoutes');
 
-const KEY = process.env.JWT_KEY;
+const JWT_KEY = process.env.JWT_KEY;
 
 const swaggerConfig = {
   info: {
@@ -70,7 +70,7 @@ async function main() {
   ]);
 
   app.auth.strategy('jwt', 'jwt', {
-    key: KEY,
+    key: JWT_KEY,
     validate: (data, request) => {
       return {
         isValid: true,
