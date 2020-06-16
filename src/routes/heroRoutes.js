@@ -5,7 +5,7 @@ const failAction =  require('./../utils/failAction');
 
 const headers = Joi.object({
     authorized: Joi.string().required()
-}).unknown;
+}).unknown();
 
 class HeroRoutes extends BaseRoute {
   constructor(db) {
@@ -24,6 +24,7 @@ class HeroRoutes extends BaseRoute {
             notes: 'Deve criar hero com moe e poder',
             validate: {
                 failAction,
+                headers,
                 payload: {
                     nome: Joi.string().required().min(3).max(100),
                     poder: Joi.string().required().min(2).max(100),
@@ -31,20 +32,7 @@ class HeroRoutes extends BaseRoute {
                 headers,
             }
         },
-        handler: (request) => {
-            try {
-                const {nome, poder} = request.payload;
-
-                const result = await this.db.create({nome, poder});
-
-                return {
-                    message: 'heroi cadastrado',
-                    _id: result,
-                }
-            } catch (error) {
-                return Boom.internal();
-            }
-        }
+        handler: (request) =>  this.db.create(request.payload)    
     }
   }
 

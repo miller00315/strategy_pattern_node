@@ -9,13 +9,17 @@ class Postgres extends InterfaceCrud {
   }
 
   async create(item) {
-    const { dataValues } = await this._schema.create(item);
+    const { dataValues } = await this._schema.create(item< {
+      raw: true,
+    });
 
     return dataValues;
   }
 
-  async update(id, item) {
-    return await this._schema.update(item, {
+  async update(id, item, upsert = false) {
+    const fn = upsert ? 'upsert' : 'update',
+
+    return this._schema[fn](item, {
       where: {
         id,
       },
@@ -45,18 +49,22 @@ class Postgres extends InterfaceCrud {
       await this._connection.authenticate();
       return true;
     } catch (err) {
-      console.log('fail, err');
+      console.log('fail', err);
       return false;
     }
   }
 
   static async connect() {
     // Sequelize precisa de banco, usuário e senha
-    const connection = new Sequelize('heroes', 'test', 'test', {
-      host: 'localhost',
-      dialect: 'postgres',
+    const connection = new Sequelize(process.env.POSTGRES_URL, {
       quoteIdentifiers: false,
+      ssl: process.env.SSL_DB,
+      dialectOptions: {
+        ssl: process.env.SSL_DB,
+      },
+      // deprecation warning
       operatorsAliases: false,
+      //disable logging
       logging: false,
     });
 

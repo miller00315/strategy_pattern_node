@@ -23,7 +23,7 @@ class MongoDb extends InterfaceCrud {
     return this._schema.find(item).skip(skip).limit(limit);
   }
 
-  update(id, item) {
+  update(id, item, upsert) {
     return this._schema.updateOne({ _id: id }, { $set: item });
   }
 
@@ -45,14 +45,13 @@ class MongoDb extends InterfaceCrud {
 
   static connect() {
     Mongoose.connect(
-      'mongodb://temp:temppassowrd@localhost:27017/heroes',
+      process.env.MONGO_URL,
       {
         useNewUrlParser: true,
       },
-      function (error) {
-        if (error) {
-          return false;
-        }
+      (error) => {
+        if (!error) return;
+        console.log('Falha na conexão!', error);
       }
     );
 
